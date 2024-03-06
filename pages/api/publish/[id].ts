@@ -4,13 +4,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function handle(req:NextApiRequest, res: NextApiResponse) {
-    const reqId = req.query.id;
+    const reqId= req.query.id;
     const {updatedTask, isCompleted} = req.body
     if (req.method === 'PUT'){
         try {
             const post = await prisma.task.update ({        
                 where: {
-                    id:reqId,
+                    id:reqId?.toString(),
                 },
                 data:{
                     taskName: updatedTask,
@@ -28,7 +28,7 @@ export default async function handle(req:NextApiRequest, res: NextApiResponse) {
         try {
             await prisma.task.delete({
                 where:{
-                    id : reqId,
+                    id : reqId?.toString(),
                 }
             })
         }   
