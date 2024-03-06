@@ -4,5 +4,9 @@ export type Task = {
     check: boolean;
     editCheck: boolean;
     isCompleted: boolean;
-    // isCompleted datatype
+}
+
+export type completedCss = {
+    fontWeight : string;
+    fontColor: string;
 }

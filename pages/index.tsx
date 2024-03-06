@@ -3,10 +3,13 @@ import { Task } from "@/types";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
+
+
 export default function Home() {
   const [text, setText] = useState<Task[]>([]);
   const [task, setTask] = useState("");
   const [editTask, setEditTask] = useState("");
+
 
   useEffect(() => {
     // Get Request
@@ -31,6 +34,7 @@ export default function Home() {
     }
     Get();
   }, []);
+
 
   const putData = async () => {
     try {
@@ -58,7 +62,7 @@ export default function Home() {
       console.log("Post data error: ", error);
     }
   };
-  
+
   const clearAllData = () => {
     try {
       axios.delete ('http://localhost:3000/api')
@@ -99,6 +103,7 @@ export default function Home() {
             console.log ("Task Updated")
             element.taskName = editTask;
             element.editCheck = false;
+            element.isCompleted = false
           }
         }
       });
@@ -127,9 +132,34 @@ export default function Home() {
     }
   };
 
+  const completed = (index: string)=>{
+    const task = [...text];
+    task.forEach(element => {
+      if (element.id === index && element.isCompleted === false){
+        const id = element.id;
+        const updatedCheck ={
+          updatedTask: element.taskName,
+          isCompleted: true,
+        }
+        axios.put (`http://localhost:3000/api/routes/${id}`, updatedCheck)
+        element.isCompleted = true
+      }
+      else if (element.id === index && element.isCompleted === true){
+        const id = element.id;
+        const updatedCheck ={
+          updatedTask: element.taskName,
+          isCompleted: false,
+        }
+        axios.put (`http://localhost:3000/api/routes/${id}`, updatedCheck)
+        element.isCompleted = false
+      }
+      setText (task)
+    });
+  }
+
   return (
-    <>
-      <div className="w-[30%]">
+    <div >
+      <div className="w-[100%]">
         <input
           type="text"
           placeholder="Enter Your Task"
@@ -152,47 +182,48 @@ export default function Home() {
           ClearAll
         </button>
       </div>
+        {text.map((tasks: Task, index): React.JSX.Element => {
+          return (
+            <div key={index} className="my-2 w-[40%] ">
+              <div className="m-3 flex justify-between items-center border border-red-400 p-2 rounded-lg">
+                <div className="w-[50%] flex items-center">
+                  <div className="font-bold">{index + 1}.</div>
 
-      {text.map((tasks: Task, index): React.JSX.Element => {
-        return (
-          <div key={index} className="my-2 w-[30%]">
-            <div className="m-3 flex justify-between items-center border border-red-400 p-2 rounded-lg">
-              <div className="w-[50%] flex items-center">
-                <div className="font-bold">{index + 1}.</div>
-                {tasks.editCheck ? (
-                  <input
-                    type="text"
-                    onChange={(e) => setEditTask(e.target.value)}
-                    value={editTask}
-                    className="bg-black text-white border border-white px-5 h-10 rounded-lg"
-                  />
-                ) : (
-                  <div> &nbsp; {tasks.taskName}</div>
-                )}
-                {tasks.editCheck ? (
-                  <button
-                    className="m-4 bg-green-600 px-5 py-2 rounded-lg"
-                    onClick={() => {
-                      okBtn(tasks.id);
-                    }}
-                  >
-                    OK
-                  </button>
-                ) : (
-                  <></>
-                )}
+                  {tasks.editCheck ? (
+                    <input
+                      type="text"
+                      onChange={(e) => setEditTask(e.target.value)}
+                      value={editTask}
+                      className="bg-black text-white border border-white px-5 h-10 rounded-lg"
+                    />
+                  ) : (
+                    <div className={(tasks.isCompleted)? "font-bold text-green-500 cursor-pointer":" cursor-pointer"} onClick={()=>{completed(tasks.id)}}> &nbsp; {tasks.taskName}</div>
+                  )}
+                  {tasks.editCheck ? (
+                    <button
+                      className="m-4 bg-green-600 px-5 py-2 rounded-lg"
+                      onClick={() => {
+                        okBtn(tasks.id);
+                      }}
+                    >
+                      OK
+                    </button>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <TaskBody
+                  check={tasks.editCheck}
+                  taskId={tasks.id}
+                  index={index}
+                  editBtn={editBtn}
+                  deleteBtn={deleteBtn}
+                />
               </div>
-              <TaskBody
-                check={tasks.editCheck}
-                taskId={tasks.id}
-                index={index}
-                editBtn={editBtn}
-                deleteBtn={deleteBtn}
-              />
             </div>
-          </div>
-        );
-      })}
-    </>
+          );
+        })}
+
+    </div>
   );
 }

@@ -17,7 +17,7 @@ const TaskBody: React.FC<props> = ({
 }) => {
   return (
     <>
-      <div>
+      <div className="flex">
         {
             (check)?<></>:
             <button
