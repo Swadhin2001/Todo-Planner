@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient, Task } from "@prisma/client";
+import { postData } from "@/pages/api/publish/post";
 
 
 const prisma = new PrismaClient()
@@ -12,16 +13,7 @@ export default async function handler(
   if (req.method === 'POST'){
     try{
       const {taskName, isCompleted} = req.body
-      prisma.$connect;
-  
-      const data = await prisma.task.create({
-        data:{          
-          taskName: taskName,
-          check: isCompleted,
-        }
-      })
-
-      console.log (data);
+      postData (taskName, isCompleted);
     }
     catch(e){
       console.log ("Prisma error : ", e);

@@ -1,8 +1,14 @@
 import TaskBody from "@/components/task";
 import { Task } from "@/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const HomePage = () => {
+  useEffect(() => {
+      // Have to write a function to fetch data from api and perfrom CRUD operation
+  }, [])
+  
+
+
   const [text, setText] = useState<Task[]>([]);
   const [task, setTask] = useState("");
   const [editTask, setEditTask] = useState("");
