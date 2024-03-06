@@ -1,10 +1,10 @@
 import React from "react";
 
 interface props {
-  taskId: number;
+  taskId: string;
   index: number;
-  editBtn: (taskId: number) => void;
-  deleteBtn: (index: number) => void;
+  editBtn: (taskId: string) => void;
+  deleteBtn: (index: number, taskId:string) => void;
   check : boolean
 }
 
@@ -29,7 +29,7 @@ const TaskBody: React.FC<props> = ({
         }
         <button
           className="bg-red-600 px-5 py-2 rounded-lg"
-          onClick={() => deleteBtn(index)}
+          onClick={() => deleteBtn(index, taskId)}
         >
           Delete
         </button>

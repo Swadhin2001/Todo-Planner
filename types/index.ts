@@ -1,6 +1,8 @@
 export type Task = {
-    id: number;
+    id: string;
     taskName: string;
     check: boolean;
     editCheck: boolean;
+    isCompleted: boolean;
+    // isCompleted datatype
 }

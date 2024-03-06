@@ -36,7 +36,7 @@ export default async function handle(req:NextApiRequest, res: NextApiResponse) {
             console.log ("Delete Api error: ", error);
         }
     }
-
+    
 }
 
 export {}
