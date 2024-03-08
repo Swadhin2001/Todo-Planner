@@ -4,8 +4,8 @@ interface props {
   taskId: string;
   index: number;
   editBtn: (taskId: string) => void;
-  deleteBtn: (index: number, taskId:string) => void;
-  check : boolean
+  deleteBtn: (index: number, taskId: string) => void;
+  check: boolean;
 }
 
 const TaskBody: React.FC<props> = ({
@@ -13,20 +13,21 @@ const TaskBody: React.FC<props> = ({
   index,
   editBtn,
   deleteBtn,
-  check
+  check,
 }) => {
   return (
     <>
       <div className="flex">
-        {
-            (check)?<></>:
-            <button
+        {check ? (
+          <></>
+        ) : (
+          <button
             className="bg-green-600 px-5 py-2 rounded-lg mx-4"
             onClick={() => editBtn(taskId)}
-            >
+          >
             Edit
-            </button>
-        }
+          </button>
+        )}
         <button
           className="bg-red-600 px-5 py-2 rounded-lg"
           onClick={() => deleteBtn(index, taskId)}

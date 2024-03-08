@@ -6,7 +6,7 @@ export type Task = {
     isCompleted: boolean;
 }
 
-export type completedCss = {
-    fontWeight : string;
-    fontColor: string;
+export type postedTask = {
+    taskName : string;
+    isCompleted: boolean;
 }
