@@ -1,27 +1,25 @@
 import TaskBody from "@/components/task";
 import usePostTask from "@/hooks/usePostTask";
-import useTaskInfo from "@/hooks/useTaskInfo";
 import useUpdateTask from "@/hooks/useUpdateTask";
 import { Task } from "@/types";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 export default function Home() {
   const [text, setText] = useState<Task[]>([]);
   const [task, setTask] = useState("");
   const [editTask, setEditTask] = useState("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Get Request
-    async function Get() {
+    async function fetchReq() {
       try {
         setLoading(true);
-        const data = await axios.get("http://localhost:3000/api/");
-        const fetchTasks = data.data;
-        const tasks: Task[] = [];
-        fetchTasks.forEach((element: any) => {
-          tasks.push({
+        const tasks = await axios.get("http://localhost:3000/api");
+        const data = tasks.data;
+        const newData: Task[] = [];
+        data.forEach((element: any) => {
+          newData.push({
             id: element.id,
             taskName: element.taskName,
             check: false,
@@ -29,14 +27,14 @@ export default function Home() {
             isCompleted: element.check,
           });
         });
-        setText(tasks);
+        setText(newData);
       } catch (error) {
-        console.log("Get Request error:", error);
+        console.log(error);
       } finally {
         setLoading(false);
       }
     }
-    Get();
+    fetchReq();
   }, []);
 
   const putData = async () => {
@@ -48,7 +46,6 @@ export default function Home() {
           taskName: task,
           isCompleted: false,
         };
-        // axios.post("http://localhost:3000/api/", postData);
         usePostTask(postData);
         const newTask: Task = {
           id: String(Date.now()),
@@ -96,7 +93,7 @@ export default function Home() {
           if (editTask === "") {
             alert("Please Enter a Task");
           } else {
-            useUpdateTask(element.id, editTask,false);
+            useUpdateTask(element.id, editTask, false);
 
             console.log("Task Updated");
             element.taskName = editTask;
@@ -154,28 +151,28 @@ export default function Home() {
 
   return (
     <>
-      {loading ? (
-        <div>Loading</div>
-      ) : (
-        <div>
-          <div className="w-[100%]">
-            <input
-              type="text"
-              placeholder="Enter Your Task"
-              onChange={(e) => {
-                setTask(e.target.value);
-              }}
-              value={task}
-              className="bg-black text-white border border-white px-5 py-2 rounded-lg"
-            />
-            <button onClick={putData} className="m-4 bg-green-600 px-5 py-2 rounded-lg">
-              Put
-            </button>
-            <button onClick={clearAllData} className="bg-red-600 px-5 py-2 rounded-lg">
-              ClearAll
-            </button>
-          </div>
-          {text.map((tasks: Task, index): React.JSX.Element => {
+      <div>
+        <div className="w-[100%]">
+          <input
+            type="text"
+            placeholder="Enter Your Task"
+            onChange={(e) => {
+              setTask(e.target.value);
+            }}
+            value={task}
+            className="bg-black text-white border border-white px-5 py-2 rounded-lg"
+          />
+          <button onClick={putData} className="m-4 bg-green-600 px-5 py-2 rounded-lg">
+            Put
+          </button>
+          <button onClick={clearAllData} className="bg-red-600 px-5 py-2 rounded-lg">
+            ClearAll
+          </button>
+        </div>
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          text.map((tasks: Task, index): React.JSX.Element => {
             return (
               <div key={index} className="my-2 w-[40%] ">
                 <div className="m-3 flex justify-between items-center border border-red-400 p-2 rounded-lg">
@@ -223,9 +220,9 @@ export default function Home() {
                 </div>
               </div>
             );
-          })}
-        </div>
-      )}
+          })
+        )}
+      </div>
     </>
   );
 }

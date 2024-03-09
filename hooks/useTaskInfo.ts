@@ -1,15 +1,35 @@
+import { Task } from '@/types';
+import axios from 'axios';
 import {useState, useEffect} from 'react'
 
 
-// Some error is occuring need debugging
-async function useTaskInfo () {
-    const [apiData, setApiData] = useState ({});
+function useTaskInfo (url:string) {
+    const [task, setTask] = useState<Task[]> ([]);
+    
     useEffect (()=>{
-        fetch ('http://localhost:3000/api')
-        .then ((res)=> res.json())
-        .then ((res)=> setApiData(res))
-    },[])
-    return apiData;
+        async function fetchReq (){
+            try {
+                const tasks = await axios.get(`${url}`);
+                const data = tasks.data;
+                const newData:Task[] = []; 
+                data.forEach((element:any) => {
+                    newData.push({
+                        id: element.id,
+                        taskName: element.taskName,
+                        check: false,
+                        editCheck: false,
+                        isCompleted: element.check,
+                    })
+                });
+                setTask (newData);
+            } 
+            catch (error) {
+                console.log (error);
+            }
+        }
+        fetchReq();
+    },[url])
+    return task;
 }
 
 export default useTaskInfo;
