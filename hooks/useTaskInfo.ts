@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react'
 
 
 function useTaskInfo (url:string) {
-    const [task, setTask] = useState<Task[]> ([]);
+    const [task, setTask] = useState ({});
     
     useEffect (()=>{
         async function fetchReq (){

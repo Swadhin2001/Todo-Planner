@@ -3,7 +3,8 @@ import usePostTask from "@/hooks/usePostTask";
 import useUpdateTask from "@/hooks/useUpdateTask";
 import { Task } from "@/types";
 import axios from "axios";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 
 export default function Home() {
   const [text, setText] = useState<Task[]>([]);
@@ -11,11 +12,21 @@ export default function Home() {
   const [editTask, setEditTask] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+  // useEffect (()=>{
+  //   async function getItem (){
+  //       const data = await fetch (apiRoutes.getProduct);
+  //       const result = await data.json();
+  //       setData (result);
+  //   }
+  //   getItem()
+  // },[]);
+
   useEffect(() => {
     async function fetchReq() {
       try {
         setLoading(true);
-        const tasks = await axios.get("http://localhost:3000/api");
+        const tasks = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api`);
         const data = tasks.data;
         const newData: Task[] = [];
         data.forEach((element: any) => {
@@ -36,6 +47,7 @@ export default function Home() {
     }
     fetchReq();
   }, []);
+
 
   const putData = async () => {
     try {
@@ -64,15 +76,17 @@ export default function Home() {
     }
   };
 
+
   const clearAllData = () => {
     try {
-      axios.delete("http://localhost:3000/api");
+      axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api`);
       setText([]);
       console.log("All Deleted");
     } catch (error) {
       console.log(error);
     }
   };
+
 
   const editBtn = (index: string): void => {
     const editData = [...text];
@@ -84,6 +98,7 @@ export default function Home() {
     });
     setText(editData);
   };
+
 
   const okBtn = (index: string): void => {
     try {
@@ -108,13 +123,20 @@ export default function Home() {
     }
   };
 
+    // const deleteItem = async (id:string) =>{
+    //     await fetch (`${apiRoutes.removeProduct}/${id}`,{
+    //         method: 'Delete'
+    //     })
+    //     console.log (id);
+    // }
+
   const deleteBtn = (index: number, taskId: string): void => {
     try {
       const deleteData = [...text];
       deleteData.forEach((element) => {
         if (element.id === taskId) {
           const id = taskId;
-          axios.delete(`http://localhost:3000/api/routes/${id}`);
+          axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/routes/${id}`);
           console.log("Deleted Successfully");
         }
       });
@@ -125,6 +147,7 @@ export default function Home() {
     }
   };
 
+
   const completed = (index: string) => {
     const task = [...text];
     task.forEach((element) => {
@@ -134,7 +157,7 @@ export default function Home() {
           updatedTask: element.taskName,
           isCompleted: true,
         };
-        axios.put(`http://localhost:3000/api/routes/${id}`, updatedCheck);
+        axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/routes/${id}`, updatedCheck);
         element.isCompleted = true;
       } else if (element.id === index && element.isCompleted === true) {
         const id = element.id;
@@ -142,12 +165,13 @@ export default function Home() {
           updatedTask: element.taskName,
           isCompleted: false,
         };
-        axios.put(`http://localhost:3000/api/routes/${id}`, updatedCheck);
+        axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/routes/${id}`, updatedCheck);
         element.isCompleted = false;
       }
       setText(task);
     });
   };
+  
 
   return (
     <>

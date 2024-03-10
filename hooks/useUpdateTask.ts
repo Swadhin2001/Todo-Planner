@@ -6,7 +6,7 @@ async function useUpdateTask(id:string, updatedTask:string, isCompleted: boolean
             updatedTask: updatedTask,
             isCompleted: isCompleted,
         }
-        await axios.put (`http://localhost:3000/api/routes/${id}`, data);
+        await axios.put (`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/routes/${id}`, data);
     } 
     catch (error) {
         console.log (error);    
